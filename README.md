@@ -4,6 +4,8 @@ Welcome to your new gem! In this directory, you'll find the files you need to be
 
 TODO: Delete this and the text above, and describe your gem
 
+Attenchen: this gem is in develop state please dont use it now 
+
 ## Installation
 
 Add this line to your application's Gemfile:
