@@ -55,4 +55,28 @@ RSpec.describe Noon do
      expect(neen.downtoken).to match(/\A0{5}/)
   end
 
+  it "check currency amout == 0" do
+    noon = Noon::Builder.new
+    expect(noon).not_to be nil
+    expect(noon.amount).to be 0
+    expect(noon.difficult).to be 2
+    expect(noon.neens).to be nil
+  end 
+
+ it "check currency amout == 0.01" do
+    noon = Noon::Builder.new(0.01)
+    expect(noon).not_to be nil
+    expect(noon.amount).to be 0.01
+    expect(noon.difficult).to be 2
+    expect(noon.neens.size).to be 1 
+  end
+
+ it "check currency amout == 0.15" do
+    noon = Noon::Builder.new(0.15)
+    expect(noon).not_to be nil
+    expect(noon.amount).to be 0.15
+    expect(noon.difficult).to be 2
+    expect(noon.neens.size).to be 15
+    puts noon.inspect
+  end
 end

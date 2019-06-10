@@ -6,6 +6,32 @@ require 'time'
 module Noon
   class Error < StandardError; end
 
+  class Builder
+    attr_reader :neens, :amount, :difficult
+    
+    def initialize(amount= 0, difficult= 2)
+        @amount= amount
+        @difficult= difficult
+        generate if amount > 0
+    end
+
+    private
+
+    def units
+     @amount * 100
+    end
+    
+    def generate
+      @neens = []
+      if @amount > 0
+        (1..units).each do |i|
+           @neens << Noon::Neen.new(@difficult)
+        end
+      end
+      @neens
+    end
+  end
+
   class Neen
     attr_reader :neen, :val    
     
