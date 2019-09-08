@@ -41,9 +41,9 @@ RSpec.describe Noon do
     expect(downtoken).not_to match(/\A0{8}/)         
   end
   
-  it "check new neen with default value == 2" do
+  it "check new neen with default value == 1" do
      neen = Noon::Neen.new
-     expect(neen.val).to be 2
+     expect(neen.val).to be 1
      expect(neen.neen).not_to be nil
   end
 
@@ -59,7 +59,7 @@ RSpec.describe Noon do
     noon = Noon::Builder.new
     expect(noon).not_to be nil
     expect(noon.amount).to be 0
-    expect(noon.difficult).to be 2
+    expect(noon.difficult).to be 1
     expect(noon.neens).to be nil
   end 
 
@@ -67,7 +67,7 @@ RSpec.describe Noon do
     noon = Noon::Builder.new(0.01)
     expect(noon).not_to be nil
     expect(noon.amount).to be 0.01
-    expect(noon.difficult).to be 2
+    expect(noon.difficult).to be 1
     expect(noon.neens.size).to be 1 
   end
 
@@ -75,8 +75,17 @@ RSpec.describe Noon do
     noon = Noon::Builder.new(0.15)
     expect(noon).not_to be nil
     expect(noon.amount).to be 0.15
-    expect(noon.difficult).to be 2
+    expect(noon.difficult).to be 1
     expect(noon.neens.size).to be 15
-    puts noon.inspect
   end
+
+ it "check currency pruduce times at amout == 0.15" do
+    noon = Noon::Builder.new(0.15)
+    expect(noon).not_to be nil
+    expect(noon.amount).to be 0.15
+    expect(noon.difficult).to be 1
+    expect(noon.neens.size).to be 15
+    expect(noon.neens.first.produce).not_to be noon.neens.last.produce
+  end
+
 end
