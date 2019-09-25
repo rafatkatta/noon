@@ -19,8 +19,8 @@ module Noon
 
     def energy
       @energy = 0
-      unless @neens.nil
-        @neens.each do |neen| 
+      if @neens
+        @neens.each do |neen|
           @energy += neen.energy
         end
       end
@@ -90,7 +90,8 @@ module Noon
     end
 
     def energy
-      ptime= Neen.produce-self.produce
+      ptime = Time.now.to_i - self.produce
+      ptime = 1 if ptime == 0  
       Math.log2(self.complexity * ptime).round(4)
     end
 
