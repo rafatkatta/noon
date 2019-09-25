@@ -7,7 +7,7 @@ module Noon
   class Error < StandardError; end
 
   class Builder
-    #build noon evry noon conatine neens
+    #build noon every noon conatine neens
     attr_reader :neens, :amount, :difficult, :additional_value
     
     def initialize(amount= 0, difficult= 1, additional_value= 1)
@@ -17,10 +17,20 @@ module Noon
         generate if amount > 0
     end
 
+    def energy
+      @energy = 0
+      unless @neens.nil
+        @neens.each do |neen| 
+          @energy += neen.energy
+        end
+      end
+      @energy
+    end
+
     private
 
     def units
-     # evry noon unit ve 100 neens 
+     # every noon unit ve 100 neens 
      @amount * 100
     end
     
@@ -33,6 +43,7 @@ module Noon
       end
       @neens
     end
+
   end
 
   class Neen
@@ -42,13 +53,14 @@ module Noon
     @additional_value= 1
     
     def initialize(base_value = 1, additional_value= 1)
+      @produce= Neen.produce
       @base_value = base_value if base_value >= 1
       @additional_value= additional_value
-      @produce= Neen.produce
       @uptoken= Neen.uptoken
       @downtoken= Neen.downtoken
       @uuid= Neen.uuid
-      @neen = {uuid: @uuid, uptoken: @uptoken, downtoken: @downtoken, produce: @produce}         
+      @energy= self.energy
+      @neen = {uuid: @uuid, uptoken: @uptoken, downtoken: @downtoken, produce: @produce, energy: @energy}         
     end
 
     def uptoken
@@ -69,6 +81,17 @@ module Noon
 
     def val
      @base_value
+    end
+
+    def complexity
+      down_index = self.downtoken.index(/[a-zA-Z1-9]/).to_f 
+      up_index =  self.uptoken.index(/[a-zA-Z1-9]/).to_f
+      up_index*down_index      
+    end
+
+    def energy
+      ptime= Neen.produce-self.produce
+      Math.log2(self.complexity * ptime).round(4)
     end
 
     private

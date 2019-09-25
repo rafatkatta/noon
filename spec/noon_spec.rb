@@ -55,6 +55,16 @@ RSpec.describe Noon do
      expect(neen.downtoken).to match(/\A0{5}/)
   end
 
+  it "check new neen complexity value" do
+     neen = Noon::Neen.new 
+     expect(neen.complexity).to be > 1 
+  end
+
+  it "check new neen energy value" do
+     neen = Noon::Neen.new 
+     expect(neen.energy).to be > 1
+  end
+
   it "check currency amout == 0" do
     noon = Noon::Builder.new
     expect(noon).not_to be nil
@@ -86,6 +96,11 @@ RSpec.describe Noon do
     expect(noon.difficult).to be 1
     expect(noon.neens.size).to be 15
     expect(noon.neens.first.produce).not_to be noon.neens.last.produce
+  end
+
+  it "check currency energy value" do
+    noon = Noon::Builder.new(0.15)
+    expect(noon.energy).to be > 1
   end
 
 end
