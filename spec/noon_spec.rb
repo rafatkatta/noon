@@ -1,106 +1,68 @@
+require "noon"
+
 RSpec.describe Noon do
 
   it "has a version number" do
-    puts Noon::VERSION
     expect(Noon::VERSION).not_to be nil
   end
 
-  it "check neen uptoken" do
-    expect(Noon::Neen.uptoken).not_to be nil
-  end
-
-  it "check neen downtoken" do
-    expect(Noon::Neen.downtoken).not_to be nil
-  end
-
-  it "check neen uuid" do
-    expect(Noon::Neen.uuid).not_to be nil
-  end
-
-  it "check neen uptoken diff true" do
-    uptokens = []
-    (0..5).each do |i|
-     uptokens << Noon::Neen.uptoken
-    end
-    expect(uptokens.uniq.size).to be uptokens.size
-  end
-
-  it "check neen downtoken diff true" do
-    downtokens = []
-    (0..5).each do |i|
-     downtokens << Noon::Neen.downtoken
-    end
-    expect(downtokens.uniq.size).to be downtokens.size
-  end
-
-  it "set value 3 at start check up and down tokens" do
-    Noon::Neen.val 3
-    uptoken = Noon::Neen.uptoken
-    downtoken = Noon::Neen.downtoken
-    expect(uptoken).to match(/\A0{4}/)
-    expect(downtoken).not_to match(/\A0{8}/)         
-  end
-  
-  it "check new neen with default value == 1" do
-     neen = Noon::Neen.new
-     expect(neen.val).to be 1
-     expect(neen.neen).not_to be nil
-  end
-
-  it "check new neen with default value == 3" do
-     neen = Noon::Neen.new 3
-     expect(neen.val).to be 3
-     expect(neen.neen).not_to be nil
-     expect(neen.uptoken).to match(/\A0{4}/)
-     expect(neen.downtoken).to match(/\A0{5}/)
-  end
-
-  it "check new neen complexity value" do
-     neen = Noon::Neen.new 
-     expect(neen.complexity).to be > 1 
-  end
-
-  it "check new neen energy value" do
-     neen = Noon::Neen.new 
-     expect(neen.energy).to be > 1
-  end
-
-  it "check currency amout == 0" do
-    noon = Noon::Builder.new
+  it "new noon object" do
+    noon = Noon.new
     expect(noon).not_to be nil
     expect(noon.amount).to be 0
-    expect(noon.difficult).to be 1
-    expect(noon.neens).to be nil
-  end 
-
- it "check currency amout == 0.01" do
-    noon = Noon::Builder.new(0.01)
-    expect(noon).not_to be nil
-    expect(noon.amount).to be 0.01
-    expect(noon.difficult).to be 1
-    expect(noon.neens.size).to be 1 
   end
 
- it "check currency amout == 0.15" do
-    noon = Noon::Builder.new(0.15)
-    expect(noon).not_to be nil
-    expect(noon.amount).to be 0.15
-    expect(noon.difficult).to be 1
-    expect(noon.neens.size).to be 15
+  it "noon can be convert to String" do
+   noon= Noon.new 0.1
+   expect(noon.to_s.class).to be String
+   expect(noon.inspect.class).to be String
   end
 
- it "check currency pruduce times at amout == 0.15" do
-    noon = Noon::Builder.new(0.15)
-    expect(noon).not_to be nil
-    expect(noon.amount).to be 0.15
-    expect(noon.difficult).to be 1
-    expect(noon.neens.size).to be 15
-    expect(noon.neens.first.produce).not_to be noon.neens.last.produce
+  it "noon can be convert to HASH" do
+   noon= Noon.new 0.1
+   expect(noon.to_h.class).to be Hash
+   expect(noon.to_hash.class).to be Hash
   end
 
-  it "check currency energy value" do
-    noon = Noon::Builder.new(0.15)
-    expect(noon.energy).to be > 1
+  it "noon can be convert to string JSON" do
+   noon= Noon.new 0.1
+   expect(noon.to_json.class).to be String
   end
 
+  it "neen can be read from noon Hash" do
+   noon= Noon.new 0.1
+   expect(noon.to_json.class).to be String
+   expect(noon.to_h.class).to be Hash
+  end
+
+  it "noon merge to other noon" do
+    noon1 = Noon.new(0.1)
+    expect(noon1.neens.length).to be 10
+    noon2 = Noon.new(0.2)
+    expect(noon2.neens.length).to be 20
+    noon1.merge noon2
+    expect(noon1.neens.length).to be 30
+  end
+
+  it "noon ve energy lg zero" do
+    noon= Noon.new 1
+    expect(noon.energy).to be > 0
+  end
+
+  it "noon ve noon complexity lg zero" do
+    noon= Noon.new 1
+    expect(noon.complexity).to be > 0
+  end
+
+  it "noon can be expand with neens" do
+    noon1 = Noon.new(0.1)
+    noon1_energy = noon1.energy
+    expect(noon1.neens.length).to be 10
+    noon2 = Noon.new(0.2)
+    expect(noon2.neens.length).to be 20
+    noon1.expand noon2.neens   
+    expect(noon1.neens.length).to be 30
+    expect(noon1.energy).to be > noon1_energy
+    expect(noon1.energy).to be > noon2.energy
+  end
 end
