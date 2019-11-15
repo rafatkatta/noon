@@ -75,6 +75,16 @@ class Noon::Builder
     @complexity  
   end
 
+  def validate(neens=nil)
+    if neens.nil?
+      @neens.map(&:uuid).uniq!.nil?
+    else
+      return false unless neens.kind_of? Array
+      return false unless neens.first.kind_of? Noon::Neen
+      neens.map(&:uuid).uniq!.nil?
+    end
+  end
+
   private
 
   def units

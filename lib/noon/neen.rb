@@ -61,6 +61,7 @@ class Noon::Neen
     ptime = 1 if ptime == 0  
     eng = complexity * ptime
     eng *= eng * BigDecimal("0.0375")
+    @energy || eng.to_f
   end
 
   def to_h

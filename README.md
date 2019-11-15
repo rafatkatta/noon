@@ -1,12 +1,27 @@
 # Noon
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/noon`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
-
+Noon its an energy based cryptocurrency project for IoT or other systems it is in development now and not usable now
 Attenchen: this gem is in develop state please dont use it now 
 
 ## Installation
+in develkopment phase
+
+clone the repository
+git clone https://github.com/rafatkatta/noon.git
+
+build
+gem build noon.gemspec
+
+testing
+run all tests
+rspec /spec
+
+run neen test
+rspec /spec/neen.rb
+
+install localy
+
+gen install noon-xx-xxx.gemspec
 
 Add this line to your application's Gemfile:
 
