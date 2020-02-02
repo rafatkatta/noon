@@ -2,91 +2,84 @@ require 'securerandom'
 require 'digest'
 require 'time'
 require 'bigdecimal'
+require "ostruct"
 
 class Noon::Neen
-  attr_reader :neen
-    
-  @base_value = 1
-  @additional_value= 1
+  attr_reader :uptoken, :downtoken, :uuid, :energy, :complexity
     
   def initialize(base_value = 1, additional_value= 1)
-    @produce= Noon::Neen.produce
-    @base_value = base_value if base_value >= 1
+    raise 'negative input data exception' if base_value < 1 || additional_value < 1
+    @base_value= base_value  
     @additional_value= additional_value
-    @uptoken= Noon::Neen.uptoken
-    @downtoken= Noon::Neen.downtoken
-    @uuid= Noon::Neen.uuid
-    @energy= self.energy
-    @neen = {uuid: @uuid, uptoken: @uptoken, downtoken: @downtoken, produce: @produce, energy: @energy, complexity: self.complexity}         
+    @produce= produce_time 
+    @uptoken= up_token
+    @downtoken= down_token
+    @uuid= u_uid
+    @energy= energy
+    @complexity= complexity
   end
 
   def self.create(neen_hash)
-    neen = Noon::Neen.new
-    neen.neen = neen_hash
-    neen
+    OpenStruct.new neen_hash
   end  
  
   def uptoken
-    @uptoken
+    @uptoken 
   end
 
   def downtoken
-    @downtoken
+    @downtoken 
   end 
 
   def uuid
-    @uuid
+    @uuid 
   end
 
   def produce
-    @produce
+    @produce 
   end
 
-  def val
-    @base_value
-  end
-
-  def neen=(neen)
-    @neen = neen
+  def index
+    "#{@base_value}/#{@additional_value}"
   end
 
   def complexity
-    down_index = self.downtoken.index(/[a-zA-Z1-9]/).to_f 
-    up_index =  self.uptoken.index(/[a-zA-Z1-9]/).to_f
+    down_index = downtoken.index(/[a-zA-Z1-9]/).to_f 
+    up_index =  uptoken.index(/[a-zA-Z1-9]/).to_f
     Math.log2(up_index*down_index)      
   end
 
   def energy
-    ptime = Time.now.to_i - produce
-    ptime = 1 if ptime == 0  
-    eng = complexity * ptime
-    eng *= eng * BigDecimal("0.0375")
-    @energy || eng.to_f
+    if @energy.nil?
+     ptime = Time.now.to_i - produce
+     ptime = 1 if ptime == 0  
+     eng = complexity * ptime
+     eng *= eng * BigDecimal("0.0375")
+     @energy = eng.to_f
+    end
+    @energy  
   end
 
   def to_h
-    @neen
+   {
+    produce: @produce,
+    base_value: @base_value,
+    additional_value: @additional_value,
+    uptoken: @uptoken,
+    downtoken: @downtoken,
+    uuid: @uuid,
+    energy: @energy,
+    complexity: @complexity
+   }
   end
 
   def to_hash
-    @neen
+    self.to_h
   end
 
   private
     
-  def self.additional_value(additional_value)
-    @additional_value= additional_value
-  end
-
-  def self.val(val)
-    Noon::Neen.base_value val
-  end
-
-  def self.base_value(base_value)
-    @base_value = base_value
-  end
-
-  def self.uptoken
+  def up_token
     # uptoken ve base_valuse of 0 at start of string token
     int = 1
     begin	
@@ -96,7 +89,7 @@ class Noon::Neen
       token
   end
 
-  def self.downtoken
+  def down_token
     # downtoken ve base_valuse + additional_value of 0 at start of string token
     int = 1
     begin
@@ -106,11 +99,11 @@ class Noon::Neen
     token
   end
 
-  def self.uuid
+  def u_uid
     SecureRandom.uuid      
   end
 
-  def self.produce
+  def produce_time
     Time.now.to_i
   end
 end

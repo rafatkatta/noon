@@ -2,52 +2,13 @@ require "noon"
 
 RSpec.describe Noon do
 
-  it "check neen uptoken" do
-    expect(Noon::Neen.uptoken).not_to be nil
-  end
-
-  it "check neen downtoken" do
-    expect(Noon::Neen.downtoken).not_to be nil
-  end
-
-  it "check neen uuid" do
-    expect(Noon::Neen.uuid).not_to be nil
-  end
-
-  it "check neen uptoken diff true" do
-    uptokens = []
-    (0..5).each do |i|
-     uptokens << Noon::Neen.uptoken
-    end
-    expect(uptokens.uniq.size).to be uptokens.size
-  end
-
-  it "check neen downtoken diff true" do
-    downtokens = []
-    (0..5).each do |i|
-     downtokens << Noon::Neen.downtoken
-    end
-    expect(downtokens.uniq.size).to be downtokens.size
-  end
-
-  it "set value 3 at start check up and down tokens" do
-    Noon::Neen.val 3
-    uptoken = Noon::Neen.uptoken
-    downtoken = Noon::Neen.downtoken
-    expect(uptoken).to match(/\A0{4}/)
-    expect(downtoken).not_to match(/\A0{8}/)         
-  end
-  
   it "check new neen with default value == 1" do
      neen = Noon::Neen.new
-     expect(neen.val).to be 1
-     expect(neen.neen).not_to be nil
+     expect(neen.index).not_to be nil
   end
 
   it "check new neen with default value == 3" do
      neen = Noon::Neen.new 3
-     expect(neen.val).to be 3
-     expect(neen.neen).not_to be nil
      expect(neen.uptoken).to match(/\A0{4}/)
      expect(neen.downtoken).to match(/\A0{5}/)
   end
@@ -62,6 +23,26 @@ RSpec.describe Noon do
      expect(neen.energy).to be > 0
   end
 
+  it "check 2 neens ve not same values" do
+     neen1 = Noon::Neen.new
+     neen2 = Noon::Neen.new
+     expect(neen1).not_to be eql? neen2
+  end
+
+  it "check 2 neens ve not same uptukens" do
+     neen1 = Noon::Neen.new
+     neen2 = Noon::Neen.new
+     expect(neen1.uptoken).not_to be eql? neen2.uptoken
+  end
+
+  it "check 2 neens ve not same uptukens" do
+     neen1 = Noon::Neen.new
+     neen2 = Noon::Neen.new
+puts neen1.uptoken
+puts neen2.uptoken
+     expect(neen1.produce).not_to be eql? neen2.produce
+  end
+
   it "neen can be convert to Hash" do
      neen = Noon::Neen.new
      expect(neen.to_h.class).to be Hash
@@ -69,11 +50,28 @@ RSpec.describe Noon do
 
   it "neen can be create from a Hash" do
      neen1 = Noon::Neen.new
-     expect(neen1.neen).not_to be nil 
-     expect(neen1.neen.class).to be Hash
+     expect(neen1).not_to be nil 
+     expect(neen1.to_hash.class).to be Hash
      neen2 = Noon::Neen.create neen1.to_h
-     expect(neen2.class).to be Noon::Neen
-     expect(neen1.neen).to be neen2.neen
+     expect(neen2.class).to be OpenStruct
+     neen1.to_h == neen2.to_h
   end
 
+  it "from a Hash created neen ve right attributtes" do
+     neen1 = Noon::Neen.new
+     expect(neen1.to_h.class).to be Hash
+     neen2 = Noon::Neen.create neen1.to_h
+     expect(neen2.class).to be OpenStruct
+     expect(neen2.complexity).to be > 0
+     expect(neen2.energy).to be > 0
+  end
+
+  it "from a Hash created neen compare attributtes" do
+     neen1 = Noon::Neen.new
+     expect(neen1).not_to be nil
+     neen2 = Noon::Neen.create neen1.to_h
+     expect(neen2.class).to be OpenStruct
+     expect(neen2.complexity).to be == neen1.complexity
+     expect(neen2.energy).to be == neen1.energy
+  end
 end
